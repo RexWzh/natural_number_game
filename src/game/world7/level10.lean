@@ -52,10 +52,24 @@ $$(\lnot Q\implies \lnot P)\implies(P\implies Q).$$
 -/
 lemma contrapositive2 (P Q : Prop) : (¬ Q → ¬ P) → (P → Q) :=
 begin
-  by_cases p : P; by_cases q : Q,
-  repeat {cc}, 
-
-
+  intros f p, -- collect known conditions
+  -- `by_cases` use the axiom: Q ∨ ¬Q is always true
+  by_cases q: Q, -- divide into two goals: Q is true or false
+  -- if Q is true than P → Q is trivial
+  exact q,
+  -- if Q is not true, i.e. ∃ q ∈ ¬Q
+  -- work on the left side of the prop. P → Q
+  have np := f(q), -- fq : ¬P
+  -- get an element of ¬P, so ¬P is true
+  -- thus, ¬P ∧ P is true
+  have pnp : P ∧ ¬P, -- we first construct ¬P ∧ P
+    split,
+    exact p,
+    exact np,
+  -- it remains to prove ¬P ∧ P → Q
+  -- it is exactly the lemma in the previous level
+  apply contra P,
+  exact pnp,
 end
 
 
